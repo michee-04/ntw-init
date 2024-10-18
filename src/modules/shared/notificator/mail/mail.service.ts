@@ -1,0 +1,85 @@
+import fs from 'fs';
+import handlebars from 'handlebars';
+import { ErrorResponse } from 'handlers';
+import { LoggerService } from 'modules/shared/logger';
+import nodemailer, { Transporter } from 'nodemailer';
+import path from 'path';
+import { ErrorResponseType, SuccessResponseType } from 'types';
+
+const logger = LoggerService.getInstance();
+
+class MailService {
+  private transporter: Transporter;
+
+  constructor() {
+    this.transporter = nodemailer.createTransport({
+      host: CONFIG.mail.host,
+      port: CONFIG.mail.port,
+      secure: CONFIG.runningProd && CONFIG.mail.port === 465, // true for 465, false for other ports
+      auth: CONFIG.runningProd
+        ? {
+            user: CONFIG.mail.user,
+            pass: CONFIG.mail.pass,
+          }
+        : undefined,
+    });
+  }
+
+  async sendMail({
+    to,
+    subject,
+    text,
+    htmlTemplate,
+    templateData,
+    fromName,
+    fromEmail,
+  }: {
+    to: string;
+    subject: string;
+    text?: string;
+    htmlTemplate?: string;
+    templateData?: Record<string, any>;
+    fromName?: string;
+    fromEmail?: string;
+  }): Promise<SuccessResponseType<void> | ErrorResponseType> {
+    try {
+      let htmlContent;
+      if (htmlTemplate) {
+        const templatePath = path.join(
+          __dirname,
+          '../../../templates/mail',
+          `${htmlTemplate}.html`,
+        );
+        const templateSource = fs.readFileSync(templatePath, 'utf-8');
+        const template = handlebars.compile(templateSource);
+        htmlContent = template(templateData);
+      }
+
+      const mailOptions = {
+        from: `"${fromName || CONFIG.mail.fromName}" <${
+          fromEmail || CONFIG.mail.from
+        }>`,
+        to,
+        subject,
+        text,
+        html: htmlContent,
+      };
+
+      await this.transporter.sendMail(mailOptions);
+      return { success: true };
+    } catch (error) {
+      logger.error('Error sending email', error as Error);
+      return {
+        success: false,
+        error: new ErrorResponse(
+          'INTERNAL_SERVER_ERROR',
+          'Failed to send email',
+          ['Please try again later.'],
+          error as Error,
+        ),
+      };
+    }
+  }
+}
+
+export default new MailService();

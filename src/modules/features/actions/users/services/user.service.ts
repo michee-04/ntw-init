@@ -1,0 +1,130 @@
+import bcrypt from 'bcrypt';
+import { ErrorResponse } from 'handlers';
+import { EntityCoreModule } from 'modules/entity-core';
+import { ErrorResponseType, SuccessResponseType } from 'types';
+import { UserModel } from '../models';
+import { UserRepository } from '../repositories';
+import { IUserModel } from '../types';
+
+const { BaseService } = EntityCoreModule.getChildren();
+
+class UserService extends BaseService<IUserModel, UserRepository> {
+  constructor() {
+    const userRepo = new UserRepository(UserModel);
+    super(userRepo, true, []);
+
+    this.allowedFilterFields = ['role', 'verified'];
+    this.searchFields = ['firstname', 'email'];
+  }
+
+  async isvalidPassword(
+    userId: string,
+    password: string,
+  ): Promise<SuccessResponseType<{ isValid: boolean }> | ErrorResponseType> {
+    try {
+      const response = (await this.findOne({
+        _id: userId,
+      })) as SuccessResponseType<IUserModel>;
+
+      if (!response.success || !response.document) {
+        LOGGER.error('Invalid password');
+        throw response.error;
+      }
+
+      const isValid = await bcrypt.compare(
+        password,
+        response.document.password,
+      );
+
+      LOGGER.info('Valid password');
+      return { success: true, document: { isValid } };
+    } catch (error) {
+      return {
+        success: false,
+        error:
+          error instanceof ErrorResponse
+            ? error
+            : new ErrorResponse(
+                'INTERNAL SERVER ERROR',
+                (error as Error).message,
+              ),
+      };
+    }
+  }
+
+  async updatePassword(
+    userId: string,
+    newPassword: string,
+  ): Promise<SuccessResponseType<IUserModel> | ErrorResponseType> {
+    try {
+      const response = (await this.findOne({
+        _id: userId,
+      })) as SuccessResponseType<IUserModel>;
+
+      if (!response.success || !response.document) {
+        throw response.error;
+      }
+
+      const hashedPassword = await bcrypt.hash(
+        newPassword,
+        CONFIG.bcrypt.saltRounds,
+      );
+
+      const updateResponse = (await this.update(
+        { _id: userId },
+        { password: hashedPassword },
+      )) as SuccessResponseType<IUserModel>;
+
+      if (!updateResponse.success) {
+        throw updateResponse.error;
+      }
+
+      return {
+        success: true,
+        document: updateResponse.document,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        error:
+          error instanceof ErrorResponse
+            ? error
+            : new ErrorResponse(
+                'INTERNAL SERVER ERROR',
+                (error as Error).message,
+              ),
+      };
+    }
+  }
+
+  async isVerified(
+    email: string,
+  ): Promise<SuccessResponseType<{ verified: boolean }> | ErrorResponseType> {
+    try {
+      const response = (await this.findOne({
+        email,
+      })) as SuccessResponseType<IUserModel>;
+      if (!response.success || !response.document) {
+        throw response.error;
+      }
+
+      return {
+        success: true,
+        document: { verified: response.document.verified },
+      };
+    } catch (error) {
+      return {
+        success: false,
+        error:
+          error instanceof ErrorResponse
+            ? error
+            : new ErrorResponse(
+                'INTERVAL_SERVER_ERROR',
+                (error as Error).message,
+              ),
+      };
+    }
+  }
+}
+
+export default new UserService();

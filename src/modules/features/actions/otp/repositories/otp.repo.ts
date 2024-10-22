@@ -1,9 +1,7 @@
+import { BaseRepository } from '@nodesandbox/repo-framework';
 import { generateRandomCode } from 'helpers';
-import { EntityCoreModule } from 'modules/entity-core';
 import { Model } from 'mongoose';
 import { IOtpModel, TOTPPurpose } from '../types';
-
-const { BaseRepository } = EntityCoreModule.getChildren();
 
 class OtpRepository extends BaseRepository<IOtpModel> {
   constructor(model: Model<IOtpModel>) {
@@ -31,7 +29,7 @@ class OtpRepository extends BaseRepository<IOtpModel> {
 
   async isValid(code: string): Promise<boolean> {
     const otp = await this.findOne({ code, isFresh: true, used: false });
-    return otp ? Date.now() <= otp.expiresAt.getTime() : false;
+    return otp ? Date.now() <= otp.expireAt.getTime() : false;
   }
 
   async findValidCodeByUser(

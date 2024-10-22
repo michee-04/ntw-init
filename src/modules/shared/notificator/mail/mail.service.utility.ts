@@ -1,5 +1,8 @@
-import { ErrorResponse } from 'handlers';
-import { ErrorResponseType, SuccessResponseType } from 'types';
+import {
+  ErrorResponse,
+  ErrorResponseType,
+  SuccessResponseType,
+} from '@nodesandbox/response-kit';
 import MailService from './mail.service';
 
 class MailServiceUtilities {

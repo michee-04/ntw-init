@@ -1,7 +1,5 @@
-import { EntityCoreModule } from 'modules/entity-core';
+import { BaseModel, createBaseSchema } from '@nodesandbox/repo-framework';
 import { IUserModel } from '../types';
-
-const { createBaseSchema, BaseModel } = EntityCoreModule.getChildren();
 
 const USER_MODEL_NAME = 'User';
 

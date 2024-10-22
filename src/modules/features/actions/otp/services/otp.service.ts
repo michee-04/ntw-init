@@ -1,15 +1,16 @@
-import { ErrorResponse } from 'handlers';
+import { BaseService } from '@nodesandbox/repo-framework';
+import {
+  ErrorResponse,
+  ErrorResponseType,
+  SuccessResponseType,
+} from '@nodesandbox/response-kit';
 import { generateRandomCode } from 'helpers';
-import { EntityCoreModule } from 'modules/entity-core';
 import { MailServiceUtilities } from 'modules/shared/notificator/mail';
-import { ErrorResponseType, SuccessResponseType } from 'types';
 import { IUserModel } from '../../users';
 import userService from '../../users/services/user.service';
 import { OtpModel } from '../models';
 import OtpRepository from '../repositories/otp.repo';
 import { IOtpModel, TOTPPurpose } from '../types';
-
-const { BaseService } = EntityCoreModule.getChildren();
 
 class OTPService extends BaseService<IOtpModel, OtpRepository> {
   constructor() {
@@ -35,7 +36,7 @@ class OTPService extends BaseService<IOtpModel, OtpRepository> {
 
       const otp = await this.repository.create({
         code: generateRandomCode(CONFIG.otp.length),
-        expiresAt: new Date(Date.now() + CONFIG.otp.expiration),
+        expireAt: new Date(Date.now() + CONFIG.otp.expiration),
         user: user.id,
         purpose,
       });

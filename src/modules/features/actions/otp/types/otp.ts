@@ -1,5 +1,5 @@
+import { IBaseModel } from '@nodesandbox/repo-framework';
 import { Document, Types } from 'mongoose';
-import { IBaseModel } from 'types';
 
 export type TOTPPurpose = keyof typeof CONFIG.otp.purposes;
 

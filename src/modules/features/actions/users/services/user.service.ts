@@ -1,12 +1,13 @@
+import { BaseService } from '@nodesandbox/repo-framework';
+import {
+  ErrorResponse,
+  ErrorResponseType,
+  SuccessResponseType,
+} from '@nodesandbox/response-kit';
 import bcrypt from 'bcrypt';
-import { ErrorResponse } from 'handlers';
-import { EntityCoreModule } from 'modules/entity-core';
-import { ErrorResponseType, SuccessResponseType } from 'types';
 import { UserModel } from '../models';
 import { UserRepository } from '../repositories';
 import { IUserModel } from '../types';
-
-const { BaseService } = EntityCoreModule.getChildren();
 
 class UserService extends BaseService<IUserModel, UserRepository> {
   constructor() {

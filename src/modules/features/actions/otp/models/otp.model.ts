@@ -1,11 +1,9 @@
-import { EntityCoreModule } from 'modules/entity-core';
+import { BaseModel, createBaseSchema } from '@nodesandbox/repo-framework';
 import { Schema } from 'mongoose';
 import { IOtpModel } from '../types';
 import { attemptLimitingPlugin } from './_plugins';
 
 const OTP_MODEL_NAME = 'OTP';
-
-const { createBaseSchema, BaseModel } = EntityCoreModule.getChildren();
 
 const otpSchema = createBaseSchema<IOtpModel>(
   {

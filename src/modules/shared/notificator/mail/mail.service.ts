@@ -1,10 +1,13 @@
+import { LoggerService } from '@nodesandbox/logger';
+import {
+  ErrorResponse,
+  ErrorResponseType,
+  SuccessResponseType,
+} from '@nodesandbox/response-kit';
 import fs from 'fs';
 import handlebars from 'handlebars';
-import { ErrorResponse } from 'handlers';
-import { LoggerService } from 'modules/shared/logger';
 import nodemailer, { Transporter } from 'nodemailer';
 import path from 'path';
-import { ErrorResponseType, SuccessResponseType } from 'types';
 
 const logger = LoggerService.getInstance();
 

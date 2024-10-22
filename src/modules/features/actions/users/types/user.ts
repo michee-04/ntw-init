@@ -1,5 +1,5 @@
+import { IBaseModel } from '@nodesandbox/repo-framework';
 import { Document } from 'mongoose';
-import { IBaseModel } from 'types';
 
 export type IUserRole = 'user' | 'admin' | 'guest';
 

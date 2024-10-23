@@ -53,6 +53,13 @@ export interface Config {
     from: string;
     fromName: string;
   };
+  sms: {
+    provider: {
+      accountSID: string;
+      authToken: string;
+    };
+    phoneNumber: string;
+  };
   bcrypt: {
     saltRounds: number;
   };
@@ -147,6 +154,14 @@ export class ConfigService {
         from: process.env.FROM_EMAIL || 'no-reply@myapp.com',
         fromName: process.env.FROM_NAME || 'Your Service Name',
       },
+      sms: {
+        phoneNumber: process.env.SMS_PHONE_NUMBER || 'your-phone-number',
+        provider: {
+          accountSID: process.env.SMS_ACCOUNT_SID || 'your-account-sid',
+          authToken: process.env.SMS_AUTH_TOKEN || 'your-auth-token',
+        },
+      },
+
       bcrypt: {
         saltRounds: parseInt(process.env.BCRYPT_SALT_ROUNDS || '10', 10),
       },

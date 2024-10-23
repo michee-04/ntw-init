@@ -41,7 +41,7 @@ class OTPService extends BaseService<IOtpModel, OtpRepository> {
         purpose,
       });
 
-      const mailResponse = await MailServiceUtilities.sendOtp({
+      const mailResponse = await MailServiceUtilities.sendMailOtp({
         to: user.email,
         code: otp.code,
         purpose,

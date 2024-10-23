@@ -6,7 +6,7 @@ import {
 import MailService from './mail.service';
 
 class MailServiceUtilities {
-  static async sendOtp({
+  static async sendMailOtp({
     to,
     code,
     purpose,

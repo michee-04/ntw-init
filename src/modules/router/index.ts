@@ -1,4 +1,4 @@
-import { TodoRoutes } from 'apps';
+import { TodoRoutes, UserManagementRoutes } from 'apps';
 import { Router } from 'express';
 import { DevRoutes } from 'modules/features/dev';
 
@@ -16,5 +16,6 @@ export class RouterModule {
   private static initializeRoutes(): void {
     RouterModule.router.use('', DevRoutes);
     RouterModule.router.use('/todos', TodoRoutes);
+    RouterModule.router.use('/user', UserManagementRoutes);
   }
 }

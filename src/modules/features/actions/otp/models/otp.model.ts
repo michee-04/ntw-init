@@ -3,7 +3,7 @@ import { Schema } from 'mongoose';
 import { IOtpModel } from '../types';
 import { attemptLimitingPlugin } from './_plugins';
 
-const OTP_MODEL_NAME = 'OTP';
+const OTP_MODEL_NAME = 'Otp';
 
 const otpSchema = createBaseSchema<IOtpModel>(
   {

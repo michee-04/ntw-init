@@ -15,7 +15,7 @@ class OtpRepository extends BaseRepository<IOtpModel> {
     await this.invalidateOldCodes(user, purpose);
     const payload = {
       code: generateRandomCode(CONFIG.otp.length),
-      expiresAt: new Date(Date.now() + CONFIG.otp.expiration),
+      expireAt: new Date(Date.now() + CONFIG.otp.expiration),
       user,
       purpose,
     };

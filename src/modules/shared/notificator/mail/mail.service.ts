@@ -50,7 +50,7 @@ class MailService {
       if (htmlTemplate) {
         const templatePath = path.join(
           __dirname,
-          '../../../templates/mail',
+          '../../../../templates/mail/',
           `${htmlTemplate}.html`,
         );
         const templateSource = fs.readFileSync(templatePath, 'utf-8');

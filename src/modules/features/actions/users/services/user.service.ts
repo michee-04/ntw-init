@@ -126,6 +126,41 @@ class UserService extends BaseService<IUserModel, UserRepository> {
       };
     }
   }
+
+  async markAsVerified(
+    email: string,
+  ): Promise<SuccessResponseType<IUserModel> | ErrorResponseType> {
+    try {
+      const response = (await this.findOne({
+        email,
+      })) as SuccessResponseType<IUserModel>;
+      if (!response.success || !response.document) {
+        throw response.error;
+      }
+
+      const updateResponse = (await this.update(
+        { _id: response.document._id },
+        { verified: true },
+      )) as SuccessResponseType<IUserModel>;
+
+      if (!updateResponse.success) {
+        throw updateResponse.error;
+      }
+
+      return {
+        success: true,
+        document: updateResponse.document,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        error:
+          error instanceof ErrorResponse
+            ? error
+            : new ErrorResponse('UNKNOWN_ERROR', (error as Error).message),
+      };
+    }
+  }
 }
 
 export default new UserService();

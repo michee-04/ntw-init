@@ -5,7 +5,7 @@ import {
   SuccessResponseType,
 } from '@nodesandbox/response-kit';
 import { generateRandomCode } from 'helpers';
-import { MailServiceUtilities } from 'modules/shared/notificator/mail';
+import { Notificator } from 'modules/shared/notificator';
 import { IUserModel } from '../../users';
 import userService from '../../users/services/user.service';
 import { OtpModel } from '../models';
@@ -41,7 +41,11 @@ class OTPService extends BaseService<IOtpModel, OtpRepository> {
         purpose,
       });
 
-      const mailResponse = await MailServiceUtilities.sendMailOtp({
+      // const smsResponse = await Notificator.sms.sendSmsOtp({
+      //   to: user.phone,
+      //   code: otp.code,
+      // });
+      const mailResponse = await Notificator.mail.sendMailOtp({
         to: user.email,
         code: otp.code,
         purpose,
@@ -118,7 +122,7 @@ class OTPService extends BaseService<IOtpModel, OtpRepository> {
   }
 
   async isExpired(otp: IOtpModel): Promise<boolean> {
-    return otp.expiresAt ? Date.now() > otp.expiresAt.getTime() : true;
+    return otp.expireAt ? Date.now() > otp.expireAt.getTime() : true;
   }
 }
 

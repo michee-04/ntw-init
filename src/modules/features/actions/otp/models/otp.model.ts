@@ -25,7 +25,7 @@ const otpSchema = createBaseSchema<IOtpModel>(
       default: true,
     },
     expireAt: {
-      tyoe: Date,
+      type: Date,
       required: true,
     },
     purpose: {
